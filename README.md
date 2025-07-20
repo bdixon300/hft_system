@@ -1,2 +1,9 @@
-# market_data_feed_handler
-UDP multicast Ultra low latency market data feed handler system in C++, ingest market data from Nasdaq ITCH protocol, for maintaining an in memory orderbook
+market data feed handler
+=========
+Hobby project to build a low latency HFT market data feed handler.
+This project holds a UDP multicast server for testing, that publishes market data messages using Nasdaq ITCH protocol. 
+The client then listens to the packets and parses them for building an in memory orderbook.
+
+[![Build Status]
+    (https://travis-ci.org/bdixoin/orderbook.svg)]
+    (https://travis-ci.org/bdixoin/orderbook)
