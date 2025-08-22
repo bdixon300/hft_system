@@ -1,19 +1,36 @@
 #include "pcap_file_reader.h"
 
 #include <stdio.h>
-#include <pcap.h>
+#include <pcap/pcap.h>
 #include <iostream>
 
-int PcapParser::parseNextPacket()
-{
-    const u_char* packet;
-    struct pcap_pkthdr* header;
+namespace MarketDataFeedHandler {
 
+PcapParser::PcapParser(const char* pcapFileName) {
+    char errBuff[PCAP_ERRBUF_SIZE];
+    d_pcapHandle = pcap_open_offline(pcapFileName, errBuff);
+    if (!d_pcapHandle)
+    {
+        throw std::runtime_error("Unable to open PCAP file!");
+    }
+}
+
+PcapParser::~PcapParser()
+{
+    pcap_close(d_pcapHandle);
+}
+
+int PcapParser::parseNextPacket(const u_char* packet, pcap_pkthdr* header)
+{
     if (pcap_next_ex(d_pcapHandle, &header, &packet) >= 0)
     {
         /* print pkt timestamp and pkt len */
-        std::cout << "packet header info: " << " header length: " << header->len << ", tv_sec: " << header->ts.tv_sec << ", tv_usec" << header->ts.tv_usec << std::endl;
-        
+        std::cout << "packet header info: [" 
+                  << " header length: " << header->len 
+                  << ", tv_sec: " << header->ts.tv_sec 
+                  << ", tv_usec" << header->ts.tv_usec << "]" 
+                  << std::endl;
+
         /* Print the packet */
         for (int i=1; i < static_cast<int>(header->caplen) + 1; i++)
         {
@@ -32,3 +49,5 @@ int PcapParser::parseNextPacket()
         return -1;
     }
 }
+
+} // MarketDataFeedHandler

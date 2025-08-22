@@ -2,6 +2,10 @@
 # Type:     Library
 file(GLOB SOURCE *.cpp)
 add_library(market_data_feed_handler_lib SHARED ${SOURCE})
+target_link_libraries(market_data_feed_handler_lib 
+    pcap
+)
+
 set_target_properties(market_data_feed_handler_lib PROPERTIES
     "OUTPUT_NAME" "market_data_feed_handler"
     "INCLUDE_DIRECTORIES" "${CMAKE_CURRENT_SOURCE_DIR}/include"
