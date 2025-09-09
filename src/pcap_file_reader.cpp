@@ -4,7 +4,7 @@
 #include <pcap/pcap.h>
 #include <iostream>
 
-namespace MarketDataFeedHandler {
+namespace MarketDataFeedSimulator {
 
 PcapParser::PcapParser(const char* pcapFileName) {
     char errBuff[PCAP_ERRBUF_SIZE];
@@ -50,4 +50,4 @@ int PcapParser::parseNextPacket(const u_char* packet, pcap_pkthdr* header)
     }
 }
 
-} // MarketDataFeedHandler
+} // MarketDataFeedSimulator

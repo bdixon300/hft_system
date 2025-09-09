@@ -4,7 +4,7 @@
 #include <fstream>
 #include <pcap.h>
 
-namespace MarketDataFeedHandler {
+namespace MarketDataFeedSimulator {
 
 class PcapParser
 {
@@ -21,6 +21,6 @@ private:
     pcap_t* d_pcapHandle;
 };
 
-} // MarketDataFeedHandler
+} // MarketDataFeedSimulator
 
 # endif

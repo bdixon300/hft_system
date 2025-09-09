@@ -13,10 +13,12 @@ int main()
     // PCAP File reader
     std::cout << "Testing the PCAP file reader component" << std::endl;
 
-    MarketDataFeedHandler::PcapParser pcapParser("/Users/ben/Documents/random_programming/market_data_feed_handler/uncompressed_pcap.pcap");
-
+    MarketDataFeedSimulator::PcapParser pcapParser("/Users/ben/Documents/random_programming/market_data_feed_handler/uncompressed_pcap.pcap");
     const u_char* packet;
     pcap_pkthdr* header = nullptr;
-    pcapParser.parseNextPacket(packet, header);
 
+    while (pcapParser.parseNextPacket(packet, header) != -1)
+    {
+        std::cout << "Parsing another packet" << std::endl;
+    } 
 }
