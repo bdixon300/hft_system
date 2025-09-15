@@ -18,9 +18,9 @@ void MarketDataServer::start()
     memset(&d_multicastAddr, 0, sizeof(d_multicastAddr)); 
 
     // Filling server information 
-    d_multicastAddr.sin_family    = AF_INET; // IPv4 
+    d_multicastAddr.sin_family = AF_INET; // IPv4 
     d_multicastAddr.sin_port = htons(PORT); 
-    inet_pton(AF_INET, "233.54.12.111", &d_multicastAddr.sin_addr);
+    inet_pton(AF_INET, IP_MULTICAST_GROUP, &d_multicastAddr.sin_addr);
 
     // Create UDP socket
     if ((d_socketFd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {

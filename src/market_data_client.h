@@ -1,5 +1,5 @@
-# ifndef MARKET_DATA_SERVER_H
-# define MARKET_DATA_SERVER_H
+# ifndef MARKET_DATA_CLIENT_H
+# define MARKET_DATA_CLIENT_H
 
 #include <sys/types.h> 
 #include <sys/socket.h> 
@@ -18,25 +18,21 @@ namespace MarketDataFeedSimulator {
  * an exchange. This will be ingested/processed by the market data feed handler)
 */
 
-// https://www.nasdaqtrader.com/Trader.aspx?id=FeedIPS_Other
-constexpr int PORT = 55370;
-constexpr char IP_MULTICAST_GROUP[] = "233.54.12.132";
-
-class MarketDataServer
+class MarketDataClient
 {
     public:
-        MarketDataServer(PcapParser& pcapParser);
-        ~MarketDataServer();
+        MarketDataClient();
+        ~MarketDataClient();
 
         void start();
         void stop();
 
-        void transmitMarketData();
+        void handleMarketData();
 
     private:
-        PcapParser d_pcapParser;
         int d_socketFd;
         struct sockaddr_in d_multicastAddr;
+        struct ip_mreq d_mreq;
 
 };
 

@@ -7,3 +7,15 @@ The client then listens to the packets and parses them for building an in memory
 [![Build Status]
     (https://travis-ci.org/bdixoin/orderbook.svg)]
     (https://travis-ci.org/bdixoin/orderbook)
+
+Done:
+- UDP multicast server
+- PCAP File parser
+
+TODOs:
+
+- UDP multicast client
+- packet parser
+- orderbook (l3)
+- strategy engine
+- order manager (OUTCH -> OUTBOUND)
