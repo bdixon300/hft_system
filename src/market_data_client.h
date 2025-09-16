@@ -33,7 +33,6 @@ class MarketDataClient
         int d_socketFd;
         struct sockaddr_in d_multicastAddr;
         struct ip_mreq d_mreq;
-
 };
 
 }

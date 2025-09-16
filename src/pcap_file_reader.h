@@ -15,7 +15,7 @@ public:
     /*
         This method parses the next available packet in the pcap handle
     */
-    int parseNextPacket(const u_char* packet /* OUT */, pcap_pkthdr* header /* OUT */);
+    int parseNextPacket(const u_char** packet /* OUT */, pcap_pkthdr** header /* OUT */);
 
 private:
     pcap_t* d_pcapHandle;

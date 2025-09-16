@@ -2,6 +2,7 @@
 #include "market_data_server.h"
 
 #include <iostream>
+#include <thread>
 #include <sys/types.h> 
 #include <sys/socket.h> 
 #include <arpa/inet.h> 
@@ -14,8 +15,15 @@ namespace MarketDataFeedSimulator {
 
 MarketDataClient::MarketDataClient() {}
 
+MarketDataClient::~MarketDataClient()
+{
+    stop();
+}
+
 void MarketDataClient::start()
 {
+    std::cout << std::this_thread::get_id() << " Starting Market Data Client..." << std::endl;
+
     // 1. Create UDP socket
     if ((d_socketFd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
         throw std::runtime_error("socket creation failed");
@@ -45,7 +53,7 @@ void MarketDataClient::start()
         throw std::runtime_error("setsockopt(IP_ADD_MEMBERSHIP) failed");
     }
 
-    std::cout << "Joined multicast group: " << IP_MULTICAST_GROUP << std::endl;
+    std::cout << std::this_thread::get_id() << " Joined multicast group: " << IP_MULTICAST_GROUP << std::endl;
 }
 
 void MarketDataClient::stop()
@@ -54,13 +62,18 @@ void MarketDataClient::stop()
         throw std::runtime_error("setsockopt(IP_DROP_MEMBERSHIP) failed");
     }
 
-    std::cout << "Left multicast group: " << IP_MULTICAST_GROUP << std::endl;
+    std::cout << std::this_thread::get_id() << " Left multicast group: " << IP_MULTICAST_GROUP << std::endl;
 
     close(d_socketFd); 
+
+    std::cout << std::this_thread::get_id() << " Market Data Client stopped" << std::endl;
+
 }
 
 void MarketDataClient::handleMarketData()
 {
+    std::cout << "Starting to ingest market data..." << std::endl;
+
     char buffer[1024];
 
     while (true) {

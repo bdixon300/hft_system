@@ -20,21 +20,21 @@ PcapParser::~PcapParser()
     pcap_close(d_pcapHandle);
 }
 
-int PcapParser::parseNextPacket(const u_char* packet, pcap_pkthdr* header)
+int PcapParser::parseNextPacket(const u_char** packet, pcap_pkthdr** header)
 {
-    if (pcap_next_ex(d_pcapHandle, &header, &packet) >= 0)
+    if (pcap_next_ex(d_pcapHandle, header, packet) >= 0)
     {
         /* print pkt timestamp and pkt len */
         std::cout << "packet header info: [" 
-                  << " header length: " << header->len 
-                  << ", tv_sec: " << header->ts.tv_sec 
-                  << ", tv_usec" << header->ts.tv_usec << "]" 
+                  << " header length: " << (*header)->len 
+                  << ", tv_sec: " << (*header)->ts.tv_sec 
+                  << ", tv_usec" << (*header)->ts.tv_usec << "]" 
                   << std::endl;
 
         /* Print the packet */
-        for (int i=1; i < static_cast<int>(header->caplen) + 1; i++)
+        for (int i=1; i < static_cast<int>((*header)->caplen) + 1; i++)
         {
-            std::cout << packet[i-1];
+            std::cout << (*packet)[i-1];
             if ( (i % 16) == 0) std::cout << std::endl;
         }
         
@@ -50,4 +50,4 @@ int PcapParser::parseNextPacket(const u_char* packet, pcap_pkthdr* header)
     }
 }
 
-} // MarketDataFeedSimulator
+} // MarketDataFeedHandler
