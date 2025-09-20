@@ -84,8 +84,13 @@ void MarketDataClient::handleMarketData()
             perror("recvfrom failed");
             break;
         }
-        buffer[n] = '\0';
-        std::cout << "Received: " << buffer << std::endl;
+
+        std::cout << std::this_thread::get_id() << " Received " << n << " bytes:" << std::endl;
+        for (int i = 0; i < n; i++) {
+            printf("%02x ", (unsigned char)buffer[i]);
+            if ((i + 1) % 16 == 0) printf("\n");
+        }
+        printf("\n");
     }
 }
 

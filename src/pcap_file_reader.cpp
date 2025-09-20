@@ -29,14 +29,18 @@ int PcapParser::parseNextPacket(const u_char** packet, pcap_pkthdr** header)
                   << " header length: " << (*header)->len 
                   << ", tv_sec: " << (*header)->ts.tv_sec 
                   << ", tv_usec" << (*header)->ts.tv_usec << "]" 
+                  << " full len " << (*header)->caplen
                   << std::endl;
 
         /* Print the packet */
+        std::cout << "Raw Packet: " << std::endl;
         for (int i=1; i < static_cast<int>((*header)->caplen) + 1; i++)
         {
-            std::cout << (*packet)[i-1];
-            if ( (i % 16) == 0) std::cout << std::endl;
+            printf("%02x ", (unsigned char)(*packet)[i]);
+            if ((i + 1) % 16 == 0) printf("\n");
         }
+
+        printf("\n");
         
         std::cout << std::endl;
 

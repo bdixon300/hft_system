@@ -60,8 +60,8 @@ void MarketDataServer::transmitMarketData()
     while (d_pcapParser.parseNextPacket(&packet, &header) != -1)
     {
         sendto(d_socketFd,
-            (const char *)packet, // bug is here
-            static_cast<int>(header->caplen) + 1, // bug is here
+            (const char *)(packet + HEADER_OFFSET),
+            static_cast<int>(header->caplen) - HEADER_OFFSET,
             0,
             (const struct sockaddr *) &d_multicastAddr,  
             sizeof(d_multicastAddr)

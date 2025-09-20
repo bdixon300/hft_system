@@ -22,6 +22,14 @@ namespace MarketDataFeedSimulator {
 constexpr int PORT = 55370;
 constexpr char IP_MULTICAST_GROUP[] = "233.54.12.132";
 
+// Offset to apply when extracting the data payload (skipping ethernet headers/udp headers/IP headers)
+// 8 bytes (UDP/Transport)
+// 20 bytes (IP4)
+// 4 BYTES (VLAN)
+// 14 bytest (ethernet)
+// 8 + 20 + 4 + 14 = 46
+constexpr int HEADER_OFFSET = 46;
+
 class MarketDataServer
 {
     public:
