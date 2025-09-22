@@ -19,6 +19,7 @@ public:
 
 private:
     pcap_t* d_pcapHandle;
+    int d_packetCnt;
 };
 
 } // MarketDataFeedSimulator

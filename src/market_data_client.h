@@ -10,14 +10,13 @@
 
 namespace MarketDataFeedSimulator {
 
+constexpr int MAX_BUFFER_SIZE = 1024;
+
 /**
  * This class will be responsible for
- * establishing a udp multicast socket,
- * to broadcast the contents of a pcap file (using pcap file reader)
- * to a dedicated multicast group, simulating market data activity from
- * an exchange. This will be ingested/processed by the market data feed handler)
+ * establishing a udp multicast socket receiver,
+ * ingesting/parsing packets from an exchange server simulator processed by the market data feed handler
 */
-
 class MarketDataClient
 {
     public:
@@ -27,12 +26,16 @@ class MarketDataClient
         void start();
         void stop();
 
+        /* Run in busy wait to pull/parse network packets from NIC */
         void handleMarketData();
 
     private:
         int d_socketFd;
         struct sockaddr_in d_multicastAddr;
         struct ip_mreq d_mreq;
+
+        /** Helper to parse the raw market data payload */
+        void parseMarketDataMessage(const char* payload, const unsigned int msgLen);
 };
 
 }

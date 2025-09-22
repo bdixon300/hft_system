@@ -15,7 +15,7 @@ int main()
 {
     std::cout << "Hello, starting a market data feed handler" << std::endl;
 
-    MarketDataFeedSimulator::PcapParser pcapParser("/Users/ben/Documents/random_programming/market_data_feed_handler/uncompressed_pcap.pcap");
+    MarketDataFeedSimulator::PcapParser pcapParser("/Users/ben/Documents/random_programming/market_data_feed_handler/nasdaw-itch5-total-view-mold-udp-marketdata.pcap");
     MarketDataFeedSimulator::MarketDataServer exchangeServer(pcapParser);
     MarketDataFeedSimulator::MarketDataClient client;
 

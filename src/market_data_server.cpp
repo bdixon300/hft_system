@@ -67,8 +67,8 @@ void MarketDataServer::transmitMarketData()
             sizeof(d_multicastAddr)
         ); 
         
-        std::cout << std::this_thread::get_id() << " Packet Sent." << std::endl; 
-        std::cout << std::this_thread::get_id() << " Parsing another packet" << std::endl;
+        //std::cout << std::this_thread::get_id() << " Packet Sent." << std::endl; 
+        //std::cout << std::this_thread::get_id() << " Parsing another packet" << std::endl;
     }
 }
 

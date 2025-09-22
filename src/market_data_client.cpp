@@ -10,7 +10,6 @@
 #include <unistd.h> 
 #include <stdlib.h> 
 
-
 namespace MarketDataFeedSimulator {
 
 MarketDataClient::MarketDataClient() {}
@@ -18,6 +17,22 @@ MarketDataClient::MarketDataClient() {}
 MarketDataClient::~MarketDataClient()
 {
     stop();
+}
+
+// 20 byte header for mold udp 64
+#pragma pack(push, 1)
+struct MoldUDP64Header {
+    char session[10];     // ASCII
+    uint64_t sequence;    // network byte order
+    uint16_t msgCount;    // network byte order
+};
+#pragma pack(pop)
+
+
+uint64_t custom_ntohll(uint64_t val) {
+    uint32_t high_part = ntohl((uint32_t)(val >> 32));
+    uint32_t low_part  = ntohl((uint32_t)(val & 0xFFFFFFFFULL));
+    return ((uint64_t)low_part << 32) | high_part;
 }
 
 void MarketDataClient::start()
@@ -81,17 +96,51 @@ void MarketDataClient::handleMarketData()
         int n = recvfrom(d_socketFd, buffer, sizeof(buffer) - 1, 0,
                          (struct sockaddr*)&d_multicastAddr, &addr_len);
         if (n < 0) {
-            perror("recvfrom failed");
+            perror("recvfrom failed"); // FIXME: exceptions are bad
             break;
         }
 
+        // measure time elapsed here
+
         std::cout << std::this_thread::get_id() << " Received " << n << " bytes:" << std::endl;
-        for (int i = 0; i < n; i++) {
-            printf("%02x ", (unsigned char)buffer[i]);
-            if ((i + 1) % 16 == 0) printf("\n");
+    
+        const MoldUDP64Header* hdr = reinterpret_cast<const MoldUDP64Header*>(buffer);
+
+        // std::cout << "Session: " << hdr->session << std::endl;
+        // std::cout << "Sequence: " << custom_ntohll(hdr->sequence) << std::endl;
+        // std::cout << "Message count: " << ntohs(hdr->msgCount) << std::endl;
+
+        int remainingBytes = n - sizeof(MoldUDP64Header);
+
+        //std::cout << "remaining bytes " << remainingBytes << std::endl;
+
+        char* ptr = buffer + sizeof(MoldUDP64Header);
+
+        while (remainingBytes > 2)
+        {
+            uint16_t msgLen = ntohs(*(uint16_t*)ptr);
+
+            ptr += 2;
+            remainingBytes -= 2;
+
+            parseMarketDataMessage(ptr, msgLen);
+
+            ptr += msgLen;
+            remainingBytes -= msgLen;
         }
-        printf("\n");
     }
+}
+
+void MarketDataClient::parseMarketDataMessage(const char* payload, const unsigned int msgLen)
+{
+    // TODO
+
+    std::cout << "Message "
+            << " type=" << payload[0]
+            << " length=" << msgLen << "\n";
+
+
+    // IMPLEMENT PARSING LOGIC
 }
 
 }
