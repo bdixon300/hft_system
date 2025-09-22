@@ -19,7 +19,26 @@ IN PROGRESS
 
 TODOs:
 
-- move logging to separate thread to prevent writes slowing down system
 - orderbook (l3)
 - strategy engine
+- move logging to separate thread to prevent writes slowing down system
 - order manager (OUTCH -> OUTBOUND)
+
+Current Lateny level
+
+- 3 microseconds from packet hitting nic to before orderbook
+
+Low latency Optimizations
+
+C++ stuff
+
+- as few mem copies as possible
+- no virtual functions (avoid vtable lookup overhead)
+- minimal heap usage (including stl - used custom allocators for stl), or custom memory pools on startup
+- lock free programming on multithreading
+- constexpr + compile time optimizations
+
+Hardware/runtime configuraiton stuff
+
+- cpu thread pinning
+- openonload / dpdk (solarflare NIC)

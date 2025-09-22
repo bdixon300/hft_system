@@ -1,6 +1,8 @@
 #ifndef PARSER_H
 #define PARSER_H
 
+#include "l3_orderbook.h"
+
 namespace HFTSystem {
 
 /*
@@ -49,10 +51,10 @@ public:
 private:
   void parseAddOrder(const char *payload);
 
-  /** Helpers by ordertype */
+  /** TODO - add Helpers by ordertype */
 
-  // L3 orderbook
-  // TODO
+  
+  Orderbook d_orderbook;
 };
 
 } // namespace HFTSystem

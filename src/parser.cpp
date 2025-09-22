@@ -31,18 +31,21 @@ void Parser::parseAddOrder(const char *payload)
 {
     // TODO
     const AddOrder* order = reinterpret_cast<const AddOrder*>(payload + 1);
+    (void)order;
 
-    std::cout << " Parsed Add Order "
-              << " Locate code " << order->locateCode 
-              << " tracking number " << order->trackingNumber
-              << " order reference number " << order->orderReferenceNumber
-              << " buy sell ?? " << order->buySellIndicator
-              << " num shares " << order->numShares
-              << " stock " << std::string(order->stock)
-              << " price " << order->price
-              << std::endl;
+    // std::cout << " Parsed Add Order "
+    //           << " Locate code " << order->locateCode 
+    //           << " tracking number " << order->trackingNumber
+    //           << " order reference number " << order->orderReferenceNumber
+    //           << " buy sell ?? " << order->buySellIndicator
+    //           << " num shares " << order->numShares
+    //           << " stock " << std::string(order->stock)
+    //           << " price " << order->price
+    //           << std::endl;
 
     // TODO - add orderbook updates
+
+    d_orderbook.addOrder(); // TODO
 }
 
 } // namespace HFTSystem

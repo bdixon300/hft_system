@@ -93,8 +93,8 @@ void MarketDataClient::handleMarketData() {
 
   char buffer[1024];
 
-  long long avgLatencyMicroseconds = 1;
-  long packetNum = 0;
+  long long total = 0;
+  long long packetNum = 0;
 
   while (true) {
     // To measure tick to trade latency
@@ -139,11 +139,11 @@ void MarketDataClient::handleMarketData() {
     // Calculate elapsed time in microseconds
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 
-    avgLatencyMicroseconds = (avgLatencyMicroseconds + duration) / (packetNum + 1);
+    total += duration;
     packetNum++;
 
     std::cout << "Elapsed time: " << duration << " microseconds" << std::endl;
-    std::cout << "average: " << avgLatencyMicroseconds << " microseconds" << std::endl;
+    std::cout << "average: " << total / packetNum << " microseconds" << std::endl;
     std::cout << "packet num " << packetNum << std::endl;
   }
 }
