@@ -11,11 +11,15 @@ The client then listens to the packets and parses them for building an in memory
 Done:
 - UDP multicast server
 - PCAP File parser
+- UDP multicast client
+
+IN PROGRESS
+- packet parser
+
 
 TODOs:
 
-- UDP multicast client
-- packet parser
+- move logging to separate thread to prevent writes slowing down system
 - orderbook (l3)
 - strategy engine
 - order manager (OUTCH -> OUTBOUND)

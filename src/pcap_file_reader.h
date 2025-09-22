@@ -1,27 +1,27 @@
-# ifndef PCAP_FILE_READER_H
-# define PCAP_FILE_READER_H
+#ifndef PCAP_FILE_READER_H
+#define PCAP_FILE_READER_H
 
 #include <fstream>
 #include <pcap.h>
 
 namespace MarketDataFeedSimulator {
 
-class PcapParser
-{
+class PcapParser {
 public:
-    PcapParser(const char* pcapFileName);
-    ~PcapParser();
+  PcapParser(const char *pcapFileName);
+  ~PcapParser();
 
-    /*
-        This method parses the next available packet in the pcap handle
-    */
-    int parseNextPacket(const u_char** packet /* OUT */, pcap_pkthdr** header /* OUT */);
+  /*
+      This method parses the next available packet in the pcap handle
+  */
+  int parseNextPacket(const u_char **packet /* OUT */,
+                      pcap_pkthdr **header /* OUT */);
 
 private:
-    pcap_t* d_pcapHandle;
-    int d_packetCnt;
+  pcap_t *d_pcapHandle;
+  int d_packetCnt;
 };
 
-} // MarketDataFeedSimulator
+} // namespace MarketDataFeedSimulator
 
-# endif
+#endif
