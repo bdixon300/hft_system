@@ -4,7 +4,7 @@
 #include <pcap/pcap.h>
 #include <stdio.h>
 
-namespace MarketDataFeedSimulator {
+namespace HFTSystem {
 
 PcapParser::PcapParser(const char *pcapFileName) {
   char errBuff[PCAP_ERRBUF_SIZE];
@@ -51,4 +51,4 @@ int PcapParser::parseNextPacket(const u_char **packet, pcap_pkthdr **header) {
   }
 }
 
-} // namespace MarketDataFeedSimulator
+} // namespace HFTSystem

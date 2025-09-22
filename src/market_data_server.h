@@ -8,7 +8,7 @@
 
 #include "pcap_file_reader.h"
 
-namespace MarketDataFeedSimulator {
+namespace HFTSystem {
 
 /**
  * This class will be responsible for
@@ -43,6 +43,6 @@ private:
   struct sockaddr_in d_multicastAddr;
 };
 
-} // namespace MarketDataFeedSimulator
+} // namespace HFTSystem
 
 #endif

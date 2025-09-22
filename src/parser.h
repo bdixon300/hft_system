@@ -1,0 +1,60 @@
+#ifndef PARSER_H
+#define PARSER_H
+
+namespace HFTSystem {
+
+/*
+    Order types currently supported (not exhaustive)
+*/
+
+#pragma pack(push, 1)
+struct AddOrder {
+    uint16_t locateCode;
+    uint16_t trackingNumber;
+    char timestamp[6];
+    uint64_t orderReferenceNumber;
+    uint8_t buySellIndicator;
+    uint32_t numShares;
+    char stock[8];
+    double price; 
+};
+#pragma pack(pop)
+
+
+struct AddOrderMpid {
+  // TODO
+};
+
+struct ModifyOrder {
+  // TODO
+};
+
+struct CancelOrder {
+  // TODO
+};
+
+/**
+ * This class will be responsible for parsing ITCH Total 5 view packets
+ * into order types for processing by L3 orderbook
+ *
+ */
+class Parser {
+public:
+  Parser();
+  ~Parser();
+
+  /** Helper to parse the raw market data payload */
+  void parseMarketDataMessage(const char *payload);
+
+private:
+  void parseAddOrder(const char *payload);
+
+  /** Helpers by ordertype */
+
+  // L3 orderbook
+  // TODO
+};
+
+} // namespace HFTSystem
+
+#endif

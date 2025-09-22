@@ -9,7 +9,7 @@
 #include <thread>
 #include <unistd.h>
 
-namespace MarketDataFeedSimulator {
+namespace HFTSystem {
 
 MarketDataServer::MarketDataServer(PcapParser &pcapParser)
     : d_pcapParser(pcapParser) {}
@@ -62,4 +62,4 @@ void MarketDataServer::transmitMarketData() {
   }
 }
 
-} // namespace MarketDataFeedSimulator
+} // namespace HFTSystem

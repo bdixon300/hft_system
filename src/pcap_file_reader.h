@@ -4,7 +4,7 @@
 #include <fstream>
 #include <pcap.h>
 
-namespace MarketDataFeedSimulator {
+namespace HFTSystem {
 
 class PcapParser {
 public:
@@ -22,6 +22,6 @@ private:
   int d_packetCnt;
 };
 
-} // namespace MarketDataFeedSimulator
+} // namespace HFTSystem
 
 #endif

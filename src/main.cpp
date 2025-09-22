@@ -10,19 +10,22 @@
 #include "pcap_file_reader.h"
 
 int main() {
-  std::cout << "Hello, starting a market data feed handler" << std::endl;
+  std::cout << "Starting a market data feed handler" << std::endl;
 
-  MarketDataFeedSimulator::PcapParser pcapParser(
+  // Simulate exchange feed
+  HFTSystem::PcapParser pcapParser(
       "/Users/ben/Documents/random_programming/market_data_feed_handler/"
       "nasdaw-itch5-total-view-mold-udp-marketdata.pcap");
-  MarketDataFeedSimulator::MarketDataServer exchangeServer(pcapParser);
-  MarketDataFeedSimulator::MarketDataClient client;
+  HFTSystem::MarketDataServer exchangeServer(pcapParser);
 
   // asynchrnous launches of each market data transmission
   std::thread exchangeServerThread([&]() {
     exchangeServer.start();
     exchangeServer.transmitMarketData();
   });
+
+  // Actual HFT system
+  HFTSystem::MarketDataClient client;
 
   // asynchronous launches of market data client
   std::thread exchangeClientThread([&]() {

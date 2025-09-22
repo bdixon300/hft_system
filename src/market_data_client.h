@@ -6,9 +6,10 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 
+#include "parser.h"
 #include "pcap_file_reader.h"
 
-namespace MarketDataFeedSimulator {
+namespace HFTSystem {
 
 constexpr int MAX_BUFFER_SIZE = 1024;
 
@@ -30,14 +31,15 @@ public:
   void handleMarketData();
 
 private:
+  // Network information
   int d_socketFd;
   struct sockaddr_in d_multicastAddr;
   struct ip_mreq d_mreq;
 
-  /** Helper to parse the raw market data payload */
-  void parseMarketDataMessage(const char *payload, const unsigned int msgLen);
+  // Market Data Parser (ITCH 5 Total View system)
+  Parser d_parser;
 };
 
-} // namespace MarketDataFeedSimulator
+} // namespace HFTSystem
 
 #endif

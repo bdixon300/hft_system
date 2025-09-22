@@ -9,8 +9,9 @@
 #include <sys/types.h>
 #include <thread>
 #include <unistd.h>
+#include <chrono>
 
-namespace MarketDataFeedSimulator {
+namespace HFTSystem {
 
 MarketDataClient::MarketDataClient() {}
 
@@ -92,7 +93,13 @@ void MarketDataClient::handleMarketData() {
 
   char buffer[1024];
 
+  long long avgLatencyMicroseconds = 1;
+  long packetNum = 0;
+
   while (true) {
+    // To measure tick to trade latency
+    auto start = std::chrono::high_resolution_clock::now();
+
     socklen_t addr_len = sizeof(d_multicastAddr);
     int n = recvfrom(d_socketFd, buffer, sizeof(buffer) - 1, 0,
                      (struct sockaddr *)&d_multicastAddr, &addr_len);
@@ -101,15 +108,15 @@ void MarketDataClient::handleMarketData() {
       break;
     }
 
-    const MoldUDP64Header *hdr =
-        reinterpret_cast<const MoldUDP64Header *>(buffer);
+    // const MoldUDP64Header *hdr =
+    //     reinterpret_cast<const MoldUDP64Header *>(buffer);
 
-    std::cout << std::this_thread::get_id()
-              << " Received Market Data Packet for parsing " << std::endl;
+    // std::cout << std::this_thread::get_id()
+    //           << " Received Market Data Packet for parsing " << std::endl;
 
-    std::cout << "Session: " << hdr->session << std::endl;
-    std::cout << "Sequence: " << custom_ntohll(hdr->sequence) << std::endl;
-    std::cout << "Message count: " << ntohs(hdr->msgCount) << std::endl;
+    // std::cout << "Session: " << hdr->session << std::endl;
+    // std::cout << "Sequence: " << custom_ntohll(hdr->sequence) << std::endl;
+    // std::cout << "Message count: " << ntohs(hdr->msgCount) << std::endl;
 
     int remainingBytes = n - sizeof(MoldUDP64Header);
     char *ptr = buffer + sizeof(MoldUDP64Header);
@@ -121,20 +128,24 @@ void MarketDataClient::handleMarketData() {
       remainingBytes -= 2;
 
       // Parse payload
-      parseMarketDataMessage(ptr, msgLen);
+      d_parser.parseMarketDataMessage(ptr);
 
       ptr += msgLen;
       remainingBytes -= msgLen;
     }
+
+    auto end = std::chrono::high_resolution_clock::now();
+
+    // Calculate elapsed time in microseconds
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+
+    avgLatencyMicroseconds = (avgLatencyMicroseconds + duration) / (packetNum + 1);
+    packetNum++;
+
+    std::cout << "Elapsed time: " << duration << " microseconds" << std::endl;
+    std::cout << "average: " << avgLatencyMicroseconds << " microseconds" << std::endl;
+    std::cout << "packet num " << packetNum << std::endl;
   }
 }
 
-void MarketDataClient::parseMarketDataMessage(const char *payload,
-                                              const unsigned int msgLen) {
-  std::cout << "Message "
-            << " type=" << payload[0] << " length=" << msgLen << "\n";
-
-  // IMPLEMENT PARSING LOGIC
-}
-
-} // namespace MarketDataFeedSimulator
+} // namespace HFTSystem
