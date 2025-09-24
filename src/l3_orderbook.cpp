@@ -2,6 +2,6 @@
 
 namespace HFTSystem {
 
-  //TODO
+// TODO
 
 } // namespace HFTSystem

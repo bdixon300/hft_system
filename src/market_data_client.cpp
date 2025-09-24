@@ -2,6 +2,7 @@
 #include "market_data_server.h"
 
 #include <arpa/inet.h>
+#include <chrono>
 #include <iostream>
 #include <netinet/in.h>
 #include <stdlib.h>
@@ -9,7 +10,6 @@
 #include <sys/types.h>
 #include <thread>
 #include <unistd.h>
-#include <chrono>
 
 namespace HFTSystem {
 
@@ -137,13 +137,16 @@ void MarketDataClient::handleMarketData() {
     auto end = std::chrono::high_resolution_clock::now();
 
     // Calculate elapsed time in microseconds
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    auto duration =
+        std::chrono::duration_cast<std::chrono::microseconds>(end - start)
+            .count();
 
     total += duration;
     packetNum++;
 
     std::cout << "Elapsed time: " << duration << " microseconds" << std::endl;
-    std::cout << "average: " << total / packetNum << " microseconds" << std::endl;
+    std::cout << "average: " << total / packetNum << " microseconds"
+              << std::endl;
     std::cout << "packet num " << packetNum << std::endl;
   }
 }

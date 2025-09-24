@@ -11,17 +11,16 @@ namespace HFTSystem {
 
 #pragma pack(push, 1)
 struct AddOrder {
-    uint16_t locateCode;
-    uint16_t trackingNumber;
-    char timestamp[6];
-    uint64_t orderReferenceNumber;
-    uint8_t buySellIndicator;
-    uint32_t numShares;
-    char stock[8];
-    double price; 
+  uint16_t locateCode;
+  uint16_t trackingNumber;
+  char timestamp[6];
+  uint64_t orderReferenceNumber;
+  uint8_t buySellIndicator;
+  uint32_t numShares;
+  char stock[8];
+  double price;
 };
 #pragma pack(pop)
-
 
 struct AddOrderMpid {
   // TODO
@@ -53,7 +52,6 @@ private:
 
   /** TODO - add Helpers by ordertype */
 
-  
   Orderbook d_orderbook;
 };
 
