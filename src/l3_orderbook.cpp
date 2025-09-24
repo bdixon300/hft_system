@@ -4,9 +4,4 @@ namespace HFTSystem {
 
   //TODO
 
-  Orderbook::Orderbook(){}
-  Orderbook::~Orderbook(){}
-
-  void Orderbook::addOrder(){}
-
 } // namespace HFTSystem
