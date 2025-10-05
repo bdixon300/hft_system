@@ -1,6 +1,3 @@
-#ifndef ITCH_TOTALVIEW_5_PARSER_H
-#define ITCH_TOTALVIEW_5_PARSER_H
-
 #include <iostream>
 #include <string>
 
@@ -29,15 +26,17 @@ void Parser::parseAddOrder(const char *payload) {
   const AddOrder *order = reinterpret_cast<const AddOrder *>(payload + 1);
   (void)order;
 
-  // std::cout << " Parsed Add Order "
-  //           << " Locate code " << order->locateCode
-  //           << " tracking number " << order->trackingNumber
-  //           << " order reference number " << order->orderReferenceNumber
-  //           << " buy sell ?? " << order->buySellIndicator
-  //           << " num shares " << order->numShares
-  //           << " stock " << std::string(order->stock)
-  //           << " price " << order->price
-  //           << std::endl;
+  // Order* orderPtr = d_orderMemPool.allocate(Order(.....))
+  // d_orderbook.addOrder(orderPtr)
+
+  std::cout << " Parsed Add Order "
+            << " Locate code " << ntohs(order->locateCode)
+            << " tracking number " << ntohs(order->trackingNumber)
+            << " order reference number " << order->orderReferenceNumber
+            << " buy sell ?? " << order->buySellIndicator << " num shares "
+            << ntohl(order->numShares) << " stock " << std::string(order->stock)
+            << " price " << static_cast<double>(ntohl(order->price)) / 10000.0
+            << std::endl;
 
   // TODO - add orderbook updates
 
@@ -45,5 +44,3 @@ void Parser::parseAddOrder(const char *payload) {
 }
 
 } // namespace HFTSystem
-
-#endif

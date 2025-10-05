@@ -8,7 +8,6 @@ namespace HFTSystem {
 /*
     Order types currently supported (not exhaustive)
 */
-
 #pragma pack(push, 1)
 struct AddOrder {
   uint16_t locateCode;
@@ -18,7 +17,7 @@ struct AddOrder {
   uint8_t buySellIndicator;
   uint32_t numShares;
   char stock[8];
-  double price;
+  uint32_t price;
 };
 #pragma pack(pop)
 
