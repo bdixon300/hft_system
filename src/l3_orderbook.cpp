@@ -4,22 +4,24 @@ namespace HFTSystem {
 
 // TODO
 
-Orderbook::Orderbook(size_t capacity) : d_orderPool(capacity) {}
+Orderbook::Orderbook(const std::string &ticker, size_t capacity)
+    : d_ticker(ticker), d_orderPool(capacity) {}
 
-bool Orderbook::isOrderFullyFillable(const OrderPointer &order) {
+void Orderbook::addOrder(const AddOrder *addOrder) {
   // TODO
-  (void)order;
-  return false;
+  (void)addOrder;
+  // d_orderPool.allocate();
 }
 
-void Orderbook::addOrder(const OrderPointer &order) {
+void Orderbook::cancelOrder(const CancelOrder *cancelOrder) {
   // TODO
-  (void)order;
+  (void)cancelOrder;
 }
 
-void Orderbook::cancelOrder(const OrderPointer &order) {
+void Orderbook::partialCancelOrder(
+    const PartialCancelOrder *partialCancelOrder) {
   // TODO
-  (void)order;
+  (void)partialCancelOrder;
 }
 
 } // namespace HFTSystem

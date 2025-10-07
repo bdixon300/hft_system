@@ -21,7 +21,8 @@ constexpr int MAX_BUFFER_SIZE = 1024;
  */
 class MarketDataClient {
 public:
-  MarketDataClient();
+  MarketDataClient(
+      const std::unordered_map<LocateCode, Ticker> &instrumentMapping);
   ~MarketDataClient();
 
   void start();

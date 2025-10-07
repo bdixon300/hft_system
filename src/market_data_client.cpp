@@ -13,7 +13,9 @@
 
 namespace HFTSystem {
 
-MarketDataClient::MarketDataClient() {}
+MarketDataClient::MarketDataClient(
+    const std::unordered_map<LocateCode, Ticker> &instrumentMapping)
+    : d_parser(instrumentMapping) {}
 
 MarketDataClient::~MarketDataClient() { stop(); }
 

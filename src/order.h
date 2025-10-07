@@ -10,17 +10,54 @@ namespace HFTSystem {
 enum class Side { BUY, SELL };
 
 enum class OrderType {
-  MARKET,
-  LIMIT,
-  FILLORKILL, // implement this
-  IOC         // implement this
+  LIMIT, // NasDaq ITCH Total view 5 is for limit orders only i think
 };
 
 using Price = double;
 using OrderId = int;
 using Quantity = unsigned int;
 
-// order should be a class with fill method and
+/*
+    Order types currently supported (not exhaustive)
+*/
+using TrackingNumber = uint16_t;
+using LocateCode = uint16_t;
+using OrderReferenceNumber = uint64_t;
+using Ticker = std::string;
+
+#pragma pack(push, 1)
+struct AddOrder {
+  LocateCode locateCode;
+  TrackingNumber trackingNumber;
+  char timestamp[6];
+  OrderReferenceNumber orderReferenceNumber;
+  uint8_t buySellIndicator;
+  uint32_t numShares;
+  char stock[8];
+  uint32_t price;
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+struct PartialCancelOrder {
+  LocateCode locateCode;
+  TrackingNumber trackingNumber;
+  char timestamp[6];
+  OrderReferenceNumber orderReferenceNumber;
+  uint32_t numShares;
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+struct CancelOrder {
+  LocateCode locateCode;
+  TrackingNumber trackingNumber;
+  char timestamp[6];
+  OrderReferenceNumber orderReferenceNumber;
+};
+#pragma pack(pop)
+
+// Order class
 class Order {
 public:
   Order(OrderId order, Price price, Side side, Quantity quantity)
@@ -28,36 +65,18 @@ public:
         m_initialQuantity(quantity), m_remainingQuantity(quantity),
         m_orderType(OrderType::LIMIT) {}
 
-  // good for day, fill or kill, fill and kill
-  Order(OrderId order, Price price, Side side, Quantity quantity,
-        OrderType orderType)
-      : m_orderId(order), m_price(price), m_side(side),
-        m_initialQuantity(quantity), m_remainingQuantity(quantity),
-        m_orderType(orderType) {}
-
-  Order(OrderId order, Side side, Quantity quantity, OrderType orderType)
-      : m_orderId(order), m_price(-1), m_side(side),
-        m_initialQuantity(quantity), m_remainingQuantity(quantity),
-        m_orderType(orderType) {}
-
   ~Order() {}
 
-  bool Filled();
-  void Fill(Quantity quantity);
+  bool filled();
+  void fill(Quantity quantity);
 
-  Price getPrice() const { return m_price; }
-
-  OrderId getOrderId() const { return m_orderId; }
-
-  Quantity getQuantity() const { return m_initialQuantity; }
-
-  Quantity getRemainingQuantity() const { return m_remainingQuantity; }
-
-  Side getSide() const { return m_side; }
-
-  OrderType getOrderType() const { return m_orderType; }
-
-  void setPrice(Price price) { m_price = price; }
+  Price getPrice() const;
+  OrderId getOrderId() const;
+  Quantity getQuantity() const;
+  Quantity getRemainingQuantity() const;
+  Side getSide() const;
+  OrderType getOrderType() const;
+  void setPrice(Price price);
 
 private:
   const OrderId m_orderId;
@@ -70,7 +89,6 @@ private:
 
 using OrderPointer = Order *;
 using OrderPointers = std::list<OrderPointer>;
-
 using Orders = std::list<Order>;
 
 struct OrderEntry {

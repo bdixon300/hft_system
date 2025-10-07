@@ -7,6 +7,7 @@
 
 #include "market_data_client.h"
 #include "market_data_server.h"
+#include "parser.h"
 #include "pcap_file_reader.h"
 
 int main() {
@@ -24,8 +25,11 @@ int main() {
     exchangeServer.transmitMarketData();
   });
 
-  // Actual HFT system
-  HFTSystem::MarketDataClient client;
+  // Actual HFT system (UDP multicast client, market data parser, orderbooks, strategy engine etc)
+  std::unordered_map<HFTSystem::LocateCode, HFTSystem::Ticker> codeMapping = {
+      {10161, "TSLA"}, {10263, "UBER"}, {523, "AMZN"}};
+
+  HFTSystem::MarketDataClient client(codeMapping);
 
   // asynchronous launches of market data client
   std::thread exchangeClientThread([&]() {
