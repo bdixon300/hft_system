@@ -5,6 +5,10 @@
 
 namespace HFTSystem {
 
+constexpr char ADD_ORDER_TYPE = 'A';
+constexpr char CANCEL_ORDER_TYPE = 'D';
+constexpr char PARTIAL_CANCEL_ORDER_TYPE = 'X';
+
 /**
  * This class will be responsible for parsing ITCH Total 5 view packets
  * into order types for processing by L3 orderbook
@@ -19,9 +23,10 @@ public:
   void parseMarketDataMessage(const char *payload);
 
 private:
-  void parseAddOrder(const char *payload);
-  void parseCancelOrder(const char *payload);
-  void parsePartialCancelOrder(const char *payload);
+
+  // Helper to extract binary stream and pass it to appropriate orderbook
+  template <typename T>
+  void parseOrder(const char *payload);
 
   // orderbooks
   std::unordered_map<LocateCode, std::unique_ptr<Orderbook>> d_orderbooks;

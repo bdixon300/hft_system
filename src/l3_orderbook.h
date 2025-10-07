@@ -18,11 +18,18 @@ public:
   Orderbook(const std::string &ticker, size_t capacity = 1024);
   ~Orderbook() {}
 
+  // upserts
+  void orderUpsert(const AddOrder *addOrder);
+  void orderUpsert(const CancelOrder *cancelOrder);
+  void orderUpsert(const PartialCancelOrder *PartialCancelOrder);
+
+private:
+
+  // Order updates
   void addOrder(const AddOrder *addOrder);
   void cancelOrder(const CancelOrder *cancelOrder);
   void partialCancelOrder(const PartialCancelOrder *partialCancelOrder);
 
-private:
   const std::string d_ticker;
 
   // memory pool for orders, to reduce heap allocations
