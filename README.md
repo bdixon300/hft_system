@@ -12,17 +12,23 @@ Done:
 - UDP multicast server
 - PCAP File parser
 - UDP multicast client
+- memory pool system for orderbook's orders
+
 
 IN PROGRESS
-- packet parser
+- packet parser (parse cancel/modify orders)
+- orderbook (l3)
 
 
 TODOs:
 
-- orderbook (l3)
 - strategy engine
 - move logging to separate thread to prevent writes slowing down system
 - order manager (OUTCH -> OUTBOUND)
+
+Nice to do - 
+
+- SPSC / SPMC for lock free IPC (between packet parser and orderbook??) ?? - may not be needed for smaller security sizes
 
 Current Lateny level
 
@@ -34,11 +40,11 @@ C++ stuff
 
 - as few mem copies as possible
 - no virtual functions (avoid vtable lookup overhead)
-- minimal heap usage (including stl - used custom allocators for stl), or custom memory pools on startup
+- minimal heap usage (including stl - used custom allocators for stl), and custom memory pools on startup
 - lock free programming on multithreading
 - constexpr + compile time optimizations
 
-Hardware/runtime configuraiton stuff
+Hardware/runtime configuration stuff
 
 - cpu thread pinning
 - openonload / dpdk (solarflare NIC)
