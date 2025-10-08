@@ -1,8 +1,12 @@
-market data feed handler
+HFT System
 =========
-Hobby project to build a low latency HFT market data feed handler.
-This project holds a UDP multicast server for testing, that publishes market data messages using Nasdaq ITCH protocol. 
-The client then listens to the packets and parses them for building an in memory orderbook.
+Hobby project to build a low latency HFT system.
+This project holds a UDP multicast server that parses a PCAP file from a real trading day on Nasdaq. This server acts as a mock simulation of a server from a real exchange, that publishes market data messages using Nasdaq ITCH protocol.
+
+The remaining components make up a low latency HFT system. This includes a UDP multicast client that listens to network packets, parses
+the ITCH messages and builds a set of in memory orderbooks from the messages. These orderbooks are monitored by the strategy engines
+to discover trading oppportunities. When an opportunity is found the strategy engine sends orders out to the exchange server using the OUTCH
+protocol.
 
 [![Build Status]
     (https://travis-ci.org/bdixoin/orderbook.svg)]
@@ -13,10 +17,9 @@ Done:
 - PCAP File parser
 - UDP multicast client
 - memory pool system for orderbook's orders
-
+- packet parser (parse cancel/modify orders)
 
 IN PROGRESS
-- packet parser (parse cancel/modify orders)
 - orderbook (l3)
 
 
@@ -30,9 +33,9 @@ Nice to do -
 
 - SPSC / SPMC for lock free IPC (between packet parser and orderbook??) ?? - may not be needed for smaller security sizes
 
-Current Lateny level
+Current Lateny level (on Apple M4 chip when run locally)
 
-- 3 microseconds from packet hitting nic to before orderbook
+- 3-4 microseconds from packet hitting nic to OUTCH message sent
 
 Low latency Optimizations
 
@@ -43,8 +46,9 @@ C++ stuff
 - minimal heap usage (including stl - used custom allocators for stl), and custom memory pools on startup
 - lock free programming on multithreading
 - constexpr + compile time optimizations
+- TMP optimizations
 
 Hardware/runtime configuration stuff
 
-- cpu thread pinning
+- cpu thread pinning / overclocking
 - openonload / dpdk (solarflare NIC)
