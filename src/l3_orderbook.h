@@ -38,7 +38,7 @@ private:
   std::unordered_map<Price, LevelData> d_askLevelData;
 
   // order tracker
-  std::unordered_map<OrderId, OrderEntry>
+  std::unordered_map<OrderReferenceNumber, OrderEntry>
       d_orders; // makes it more efficient to cancel orders
 
   // thread safety

@@ -1,7 +1,20 @@
 #include "order.h"
 
 namespace HFTSystem {
-// TODO
+
+Order::Order(OrderReferenceNumber order, Price price, Side side,
+             Quantity quantity)
+    : m_orderReferenceNumber(order), m_price(price), m_side(side),
+      m_initialQuantity(quantity), m_remainingQuantity(quantity),
+      m_orderType(OrderType::LIMIT) {}
+
+Order::Order(const AddOrder *addOrder)
+    : m_orderReferenceNumber(addOrder->orderReferenceNumber),
+      m_price(static_cast<double>(ntohl(addOrder->price)) / 10000.0),
+      m_side(addOrder->buySellIndicator == 'B' ? Side::BUY : Side::SELL),
+      m_initialQuantity(ntohl(addOrder->numShares)),
+      m_remainingQuantity(ntohl(addOrder->numShares)),
+      m_orderType(OrderType::LIMIT) {}
 
 bool Order::filled() {
   // TODO
@@ -15,7 +28,9 @@ void Order::fill(Quantity quantity) {
 
 Price Order::getPrice() const { return m_price; }
 
-OrderId Order::getOrderId() const { return m_orderId; }
+OrderReferenceNumber Order::getOrderReferenceNumber() const {
+  return m_orderReferenceNumber;
+}
 
 Quantity Order::getQuantity() const { return m_initialQuantity; }
 

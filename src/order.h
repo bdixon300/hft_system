@@ -7,18 +7,8 @@
 
 namespace HFTSystem {
 
-enum class Side { BUY, SELL };
-
-enum class OrderType {
-  LIMIT, // NasDaq ITCH Total view 5 is for limit orders only i think
-};
-
-using Price = double;
-using OrderId = int;
-using Quantity = unsigned int;
-
 /*
-    Order types currently supported (not exhaustive)
+    Aliases for Market Data Messages
 */
 using TrackingNumber = uint16_t;
 using LocateCode = uint16_t;
@@ -57,21 +47,30 @@ struct CancelOrder {
 };
 #pragma pack(pop)
 
+/** Aliases for Orders in Orderbook form */
+
+enum class Side { BUY, SELL };
+
+enum class OrderType {
+  LIMIT, // NasDaq ITCH Total view 5 is for limit orders only i think
+};
+
+using Price = double;
+using Quantity = unsigned int;
+
 // Order class
 class Order {
 public:
-  Order(OrderId order, Price price, Side side, Quantity quantity)
-      : m_orderId(order), m_price(price), m_side(side),
-        m_initialQuantity(quantity), m_remainingQuantity(quantity),
-        m_orderType(OrderType::LIMIT) {}
+  Order(OrderReferenceNumber order, Price price, Side side, Quantity quantity);
+  Order(const AddOrder *addOrder);
 
-  ~Order() {}
+  ~Order() = default;
 
   bool filled();
   void fill(Quantity quantity);
 
   Price getPrice() const;
-  OrderId getOrderId() const;
+  OrderReferenceNumber getOrderReferenceNumber() const;
   Quantity getQuantity() const;
   Quantity getRemainingQuantity() const;
   Side getSide() const;
@@ -79,7 +78,7 @@ public:
   void setPrice(Price price);
 
 private:
-  const OrderId m_orderId;
+  const OrderReferenceNumber m_orderReferenceNumber;
   Price m_price;
   const Side m_side;
   const Quantity m_initialQuantity;
@@ -97,7 +96,7 @@ struct OrderEntry {
 };
 
 struct TradeInfo {
-  OrderId id;
+  OrderReferenceNumber id;
   Price price;
   Quantity quantity;
 };

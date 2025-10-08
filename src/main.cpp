@@ -25,7 +25,8 @@ int main() {
     exchangeServer.transmitMarketData();
   });
 
-  // Actual HFT system (UDP multicast client, market data parser, orderbooks, strategy engine etc)
+  // Actual HFT system (UDP multicast client, market data parser, orderbooks,
+  // strategy engine etc)
   std::unordered_map<HFTSystem::LocateCode, HFTSystem::Ticker> codeMapping = {
       {10161, "TSLA"}, {10263, "UBER"}, {523, "AMZN"}};
 

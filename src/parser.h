@@ -5,7 +5,6 @@
 
 namespace HFTSystem {
 
-
 constexpr char ADD_ORDER_TYPE = 'A';
 constexpr char CANCEL_ORDER_TYPE = 'D';
 constexpr char PARTIAL_CANCEL_ORDER_TYPE = 'X';
@@ -24,10 +23,8 @@ public:
   void parseMarketDataMessage(const char *payload);
 
 private:
-
   // Helper to extract binary stream and pass it to appropriate orderbook
-  template <typename OrderType>
-  void parseOrder(const char *payload);
+  template <typename OrderType> void parseOrder(const char *payload);
 
   // orderbooks
   std::unordered_map<LocateCode, std::unique_ptr<Orderbook>> d_orderbooks;
