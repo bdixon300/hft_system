@@ -19,17 +19,11 @@ public:
   ~Orderbook() {}
 
   // upserts
-  void orderUpsert(const AddOrder *addOrder);
-  void orderUpsert(const CancelOrder *cancelOrder);
-  void orderUpsert(const PartialCancelOrder *PartialCancelOrder);
+  void applyOrderEvent(const AddOrder *addOrder);
+  void applyOrderEvent(const CancelOrder *cancelOrder);
+  void applyOrderEvent(const PartialCancelOrder *PartialCancelOrder);
 
 private:
-
-  // Order updates
-  void addOrder(const AddOrder *addOrder);
-  void cancelOrder(const CancelOrder *cancelOrder);
-  void partialCancelOrder(const PartialCancelOrder *partialCancelOrder);
-
   const std::string d_ticker;
 
   // memory pool for orders, to reduce heap allocations

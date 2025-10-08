@@ -5,6 +5,7 @@
 
 namespace HFTSystem {
 
+
 constexpr char ADD_ORDER_TYPE = 'A';
 constexpr char CANCEL_ORDER_TYPE = 'D';
 constexpr char PARTIAL_CANCEL_ORDER_TYPE = 'X';
@@ -25,7 +26,7 @@ public:
 private:
 
   // Helper to extract binary stream and pass it to appropriate orderbook
-  template <typename T>
+  template <typename OrderType>
   void parseOrder(const char *payload);
 
   // orderbooks

@@ -29,7 +29,7 @@ int PcapParser::parseNextPacket(const u_char **packet, pcap_pkthdr **header) {
 
     /* Print the packet */
     // std::cout << "Raw Packet: " << std::endl;
-    //  for (int i=1; i < static_cast<int>((*header)->caplen) + 1; i++)
+    //  for (int i=1; i < static_cast<int>((*header)->caplen) + 1; ++i)
     //  {
     //      printf("%02x ", (unsigned char)(*packet)[i]);
     //      if ((i + 1) % 16 == 0) printf("\n");
@@ -40,7 +40,7 @@ int PcapParser::parseNextPacket(const u_char **packet, pcap_pkthdr **header) {
     // std::cout << std::endl;
 
     // packet successfully processed
-    d_packetCnt++;
+    ++d_packetCnt;
 
     return 0;
   } else {
