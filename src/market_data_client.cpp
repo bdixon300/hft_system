@@ -149,8 +149,9 @@ void MarketDataClient::handleMarketData() {
     (void)total;
     (void)packetNum;
 
-    // std::cout << "Elapsed time: " << duration << " microseconds" << std::endl;
-    // std::cout << "average: " << total / packetNum << "microseconds"
+    // std::cout << "Elapsed time: " << duration << " microseconds" <<
+    // std::endl; std::cout << "average: " << total / packetNum <<
+    // "microseconds"
     //           << std::endl;
     // std::cout << "packet num " << packetNum << std::endl;
   }

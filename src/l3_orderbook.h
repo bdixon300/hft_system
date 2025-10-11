@@ -15,7 +15,7 @@ namespace HFTSystem {
 
 class Orderbook {
 public:
-  Orderbook(const std::string &ticker, size_t capacity = 1024);
+  Orderbook(const std::string &ticker, size_t capacity = 1024*64);
   ~Orderbook() {}
 
   // upserts
