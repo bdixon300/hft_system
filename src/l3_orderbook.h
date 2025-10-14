@@ -15,7 +15,7 @@ namespace HFTSystem {
 
 class Orderbook {
 public:
-  Orderbook(const std::string &ticker, size_t capacity = 1024*64);
+  Orderbook(const std::string &ticker, size_t capacity = 1024 * 64);
   ~Orderbook() {}
 
   // upserts
@@ -24,6 +24,8 @@ public:
   void applyOrderEvent(const PartialCancelOrder *PartialCancelOrder);
 
 private:
+  void removeOrder(OrderEntry &order);
+
   const std::string d_ticker;
 
   // memory pool for orders, to reduce heap allocations

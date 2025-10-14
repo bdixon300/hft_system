@@ -4,42 +4,38 @@ namespace HFTSystem {
 
 Order::Order(OrderReferenceNumber order, Price price, Side side,
              Quantity quantity)
-    : m_orderReferenceNumber(order), m_price(price), m_side(side),
-      m_initialQuantity(quantity), m_remainingQuantity(quantity),
-      m_orderType(OrderType::LIMIT) {}
+    : d_orderReferenceNumber(order), d_price(price), d_side(side),
+      d_initialQuantity(quantity), d_remainingQuantity(quantity),
+      d_orderType(OrderType::LIMIT) {}
 
 Order::Order(const AddOrder *addOrder)
-    : m_orderReferenceNumber(addOrder->orderReferenceNumber),
-      m_price(static_cast<double>(ntohl(addOrder->price)) / 10000.0),
-      m_side(addOrder->buySellIndicator == 'B' ? Side::BUY : Side::SELL),
-      m_initialQuantity(ntohl(addOrder->numShares)),
-      m_remainingQuantity(ntohl(addOrder->numShares)),
-      m_orderType(OrderType::LIMIT) {}
+    : d_orderReferenceNumber(addOrder->orderReferenceNumber),
+      d_price(static_cast<double>(ntohl(addOrder->price)) / 10000.0),
+      d_side(addOrder->buySellIndicator == 'B' ? Side::BUY : Side::SELL),
+      d_initialQuantity(ntohl(addOrder->numShares)),
+      d_remainingQuantity(ntohl(addOrder->numShares)),
+      d_orderType(OrderType::LIMIT) {}
 
-bool Order::filled() {
-  // TODO
-  return false;
+bool Order::filledOrCancelled() { return d_remainingQuantity <= 0; }
+
+void Order::partialCancel(Quantity quantity) {
+  d_remainingQuantity -= quantity;
 }
 
-void Order::fill(Quantity quantity) {
-  (void)quantity;
-  // TODO
-}
-
-Price Order::getPrice() const { return m_price; }
+Price Order::getPrice() const { return d_price; }
 
 OrderReferenceNumber Order::getOrderReferenceNumber() const {
-  return m_orderReferenceNumber;
+  return d_orderReferenceNumber;
 }
 
-Quantity Order::getQuantity() const { return m_initialQuantity; }
+Quantity Order::getQuantity() const { return d_initialQuantity; }
 
-Quantity Order::getRemainingQuantity() const { return m_remainingQuantity; }
+Quantity Order::getRemainingQuantity() const { return d_remainingQuantity; }
 
-Side Order::getSide() const { return m_side; }
+Side Order::getSide() const { return d_side; }
 
-OrderType Order::getOrderType() const { return m_orderType; }
+OrderType Order::getOrderType() const { return d_orderType; }
 
-void Order::setPrice(Price price) { m_price = price; }
+void Order::setPrice(Price price) { d_price = price; }
 
 } // namespace HFTSystem

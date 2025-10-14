@@ -66,8 +66,8 @@ public:
 
   ~Order() = default;
 
-  bool filled();
-  void fill(Quantity quantity);
+  bool filledOrCancelled();
+  void partialCancel(Quantity quantity);
 
   Price getPrice() const;
   OrderReferenceNumber getOrderReferenceNumber() const;
@@ -78,12 +78,12 @@ public:
   void setPrice(Price price);
 
 private:
-  const OrderReferenceNumber m_orderReferenceNumber;
-  Price m_price;
-  const Side m_side;
-  const Quantity m_initialQuantity;
-  Quantity m_remainingQuantity;
-  const OrderType m_orderType;
+  const OrderReferenceNumber d_orderReferenceNumber;
+  Price d_price;
+  const Side d_side;
+  const Quantity d_initialQuantity;
+  Quantity d_remainingQuantity;
+  const OrderType d_orderType;
 };
 
 using OrderPointer = Order *;

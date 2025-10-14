@@ -21,16 +21,17 @@ Done:
 
 IN PROGRESS
 - orderbook (l3)
+- strategy engine
 
 
 TODOs:
 
-- strategy engine
 - move logging to separate thread to prevent writes slowing down system
 - order manager (OUTCH -> OUTBOUND)
 
 Nice to do - 
 
+- create custom map std:: that uses contiguous memory. std::map is a RB tree and memory is not contiguous (use this in orderbook implementation)
 - SPSC / SPMC for lock free IPC (between packet parser and orderbook??) ?? - may not be needed for smaller security sizes
 
 Current Lateny level (on Apple M4 chip when run locally)

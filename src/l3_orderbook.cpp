@@ -29,7 +29,6 @@ void Orderbook::applyOrderEvent(const AddOrder *addOrder) {
 }
 
 void Orderbook::applyOrderEvent(const CancelOrder *cancelOrder) {
-
   // if we dont have an order in book matching we have to ignore
   if (!d_orders.count(cancelOrder->orderReferenceNumber)) {
     std::cout << "No corresponding order, here for ref number: "
@@ -39,11 +38,43 @@ void Orderbook::applyOrderEvent(const CancelOrder *cancelOrder) {
   }
 
   OrderEntry &orderEntry = d_orders[cancelOrder->orderReferenceNumber];
-  OrderPointer &order = orderEntry.order;
 
   std::cout << " Cancelling Order: " << d_ticker << "  "
-            << order->getOrderReferenceNumber() << " " << order->getPrice()
-            << " " << order->getQuantity() << std::endl;
+            << orderEntry.order->getOrderReferenceNumber() << " "
+            << orderEntry.order->getPrice() << " "
+            << orderEntry.order->getQuantity() << std::endl;
+
+  removeOrder(orderEntry);
+}
+
+void Orderbook::applyOrderEvent(const PartialCancelOrder *partialCancelOrder) {
+  // if we dont have an order in book matching we have to ignore
+  if (!d_orders.count(partialCancelOrder->orderReferenceNumber)) {
+    std::cout << "No corresponding order, here for ref number: "
+              << partialCancelOrder->orderReferenceNumber << ", skipping trade"
+              << std::endl;
+    return;
+  }
+
+  OrderEntry &orderEntry = d_orders[partialCancelOrder->orderReferenceNumber];
+
+  std::cout << " Partially Cancelling Order: " << d_ticker << "  "
+            << orderEntry.order->getOrderReferenceNumber() << " "
+            << orderEntry.order->getPrice()
+            << " Outstanding quantity: " << orderEntry.order->getQuantity()
+            << ", Quantity to cancel: " << partialCancelOrder->numShares
+            << std::endl;
+
+  orderEntry.order->partialCancel(partialCancelOrder->numShares);
+
+  // If order is fully cancelled remove from orderbook
+  if (orderEntry.order->filledOrCancelled()) {
+    removeOrder(orderEntry);
+  }
+}
+
+void Orderbook::removeOrder(OrderEntry &orderEntry) {
+  OrderPointer &order = orderEntry.order;
 
   if (order->getSide() == Side::BUY) {
     // level data update
@@ -64,13 +95,8 @@ void Orderbook::applyOrderEvent(const CancelOrder *cancelOrder) {
   }
 
   d_orders.erase(order->getOrderReferenceNumber());
+  // Remove order from memory pool
   d_orderPool.deallocate(order);
-  (void)cancelOrder;
-}
-
-void Orderbook::applyOrderEvent(const PartialCancelOrder *partialCancelOrder) {
-  // TODO
-  (void)partialCancelOrder;
 }
 
 } // namespace HFTSystem
