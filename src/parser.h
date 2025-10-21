@@ -8,6 +8,7 @@ namespace HFTSystem {
 constexpr char ADD_ORDER_TYPE = 'A';
 constexpr char CANCEL_ORDER_TYPE = 'D';
 constexpr char PARTIAL_CANCEL_ORDER_TYPE = 'X';
+constexpr char FILLED_ORDER_TYPE = 'E';
 
 /**
  * This class will be responsible for parsing ITCH Total 5 view packets

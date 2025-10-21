@@ -18,9 +18,9 @@ Done:
 - UDP multicast client
 - memory pool system for orderbook's orders
 - packet parser (parse cancel/modify orders)
+- orderbook (l3)
 
 IN PROGRESS
-- orderbook (l3)
 - strategy engine
 
 

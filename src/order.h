@@ -47,6 +47,16 @@ struct CancelOrder {
 };
 #pragma pack(pop)
 
+#pragma pack(push, 1)
+struct FilledOrder {
+  LocateCode locateCode;
+  TrackingNumber trackingNumber;
+  char timestamp[6];
+  OrderReferenceNumber orderReferenceNumber;
+  uint32_t executedShares;
+};
+#pragma pack(pop)
+
 /** Aliases for Orders in Orderbook form */
 
 enum class Side { BUY, SELL };
@@ -67,6 +77,7 @@ public:
   ~Order() = default;
 
   bool filledOrCancelled();
+  void fill(Quantity quantity);
   void partialCancel(Quantity quantity);
 
   Price getPrice() const;

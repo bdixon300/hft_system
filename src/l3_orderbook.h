@@ -10,8 +10,12 @@
 
 #include "mempool.h"
 #include "order.h"
+#include "strategy_engine.h"
 
 namespace HFTSystem {
+
+constexpr int NEGATIVE_SIGN = -1;
+constexpr int POSITIVE_SIGN = 1;
 
 class Orderbook {
 public:
@@ -22,9 +26,20 @@ public:
   void applyOrderEvent(const AddOrder *addOrder);
   void applyOrderEvent(const CancelOrder *cancelOrder);
   void applyOrderEvent(const PartialCancelOrder *PartialCancelOrder);
+  void applyOrderEvent(const FilledOrder *filledOrder);
+
+  // computations for strategies
+  double computeImbalance() const;
 
 private:
   void removeOrder(OrderEntry &order);
+
+  // computations for strategies
+  double topBidVolume() const;
+  double topAskVolume() const;
+
+  // update level data
+  void updateLevelData(Side side, double price, double quantity);
 
   const std::string d_ticker;
 
@@ -43,8 +58,8 @@ private:
   std::unordered_map<OrderReferenceNumber, OrderEntry>
       d_orders; // makes it more efficient to cancel orders
 
-  // thread safety
-  std::mutex d_orderMutex;
+  // Strategy engine - to pass order imbalance updates and generate OUTCH orders
+  StrategyEngine d_strategyEngine;
 };
 
 } // namespace HFTSystem

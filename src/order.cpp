@@ -22,6 +22,11 @@ void Order::partialCancel(Quantity quantity) {
   d_remainingQuantity -= quantity;
 }
 
+void Order::fill(Quantity quantity)
+{
+  d_remainingQuantity -= quantity;
+}
+
 Price Order::getPrice() const { return d_price; }
 
 OrderReferenceNumber Order::getOrderReferenceNumber() const {
