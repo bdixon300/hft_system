@@ -9,7 +9,8 @@ StrategyEngine::StrategyEngine(const std::string &ticker,
                                double imbalanceThreshold)
     : d_ticker(ticker), d_imbalanceThreshold(imbalanceThreshold) {}
 
-void StrategyEngine::applyOrderEvent(double orderbookImbalance) {
+void StrategyEngine::applyOrderEvent(double orderbookImbalance,
+                                     double bestBidPrice, double bestAskPrice) {
   if (std::abs(orderbookImbalance) < d_imbalanceThreshold) {
     // too small an imbalance, don't trade
     return;
@@ -19,10 +20,10 @@ void StrategyEngine::applyOrderEvent(double orderbookImbalance) {
 
   if (orderbookImbalance < d_imbalanceThreshold) {
     // SELL order
-    d_orderGenerator.submitOrder(Side::BUY, d_ticker, quantity);
+    d_orderGenerator.submitOrder(Side::BUY, bestBidPrice, d_ticker, quantity);
   } else if (orderbookImbalance > d_imbalanceThreshold) {
     // BUY order
-    d_orderGenerator.submitOrder(Side::SELL, d_ticker, quantity);
+    d_orderGenerator.submitOrder(Side::SELL, bestAskPrice, d_ticker, quantity);
   }
   // if imbalance is 0 dont place orders
 }

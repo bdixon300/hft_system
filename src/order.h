@@ -15,6 +15,9 @@ using LocateCode = uint16_t;
 using OrderReferenceNumber = uint64_t;
 using Ticker = std::string;
 
+/**
+ * ITCH BASED market data structs
+ */
 #pragma pack(push, 1)
 struct AddOrder {
   LocateCode locateCode;

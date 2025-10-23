@@ -37,6 +37,8 @@ private:
   // computations for strategies
   double topBidVolume() const;
   double topAskVolume() const;
+  double topBidPrice() const;
+  double topAskPrice() const;
 
   // update level data
   void updateLevelData(Side side, double price, double quantity);

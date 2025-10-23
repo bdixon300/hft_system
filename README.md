@@ -20,21 +20,23 @@ Done:
 - packet parser (parse cancel/modify orders)
 - orderbook (l3)
 - strategy engine
+- basic order generator
 
 
-IN PROGRESS
-- order manager (OUTCH -> OUTBOUND)
+TODOs (next items)
 
+- Build a TCP client for submiting Orders using the OUTCH protocol
+- use one shared order generator across multiple orderbooks/strategy engines and use a spsc queue (between the ITCH parser/orderbook/strategy engine) and the OUTCH client for submitting orders.
 
-TODOs:
-
-- use one shared order generator across orderbooks and use a spsc queue for the events
 - move logging to separate thread to prevent writes slowing down system
 
-Nice to do - 
+Nice to do (Potential further optimizations) - 
 
-- create custom map std:: that uses contiguous memory. std::map is a RB tree and memory is not contiguous (use this in orderbook implementation)
+- create custom std::map that uses contiguous memory. std::map is a RB tree and memory is not contiguous (use this in orderbook implementation to reduce latency).
 
+- look for further optimization possibilities
+
+- Implement more sophisticated HFT strategies 
 
 Current Mean Latency level (on Apple M4 chip when run locally)
 
@@ -44,14 +46,13 @@ Current Median / Tail latency levels (on Apple M4 chep when running locally)
 
 - 6 - 10 microseconds
 
-Low latency Optimizations
+Low latency Optimization Principles
 
-C++ stuff
-
-- as few mem copies as possible
+- Made as few memory copies as possible
 - no virtual functions (avoid vtable lookup overhead)
-- minimal heap allocation/deallocation usage when live (including stl - used custom allocators for stl), and custom memory pools on startup
-- lock free programming on multithreading (SPSC queue)
+- minimal heap allocation/deallocation usage when live, ie: used custom memory pool on startup
+for orders in the orderbook.
+- lock free programming on multithreading side (SPSC queue)
 - constexpr + compile time optimizations
 - TMP optimizations
 

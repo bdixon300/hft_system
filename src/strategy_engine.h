@@ -20,7 +20,8 @@ public:
 
   ~StrategyEngine() {}
 
-  void applyOrderEvent(double orderbookImbalance);
+  void applyOrderEvent(double orderbookImbalance, double bestBidPrice,
+                       double bestAskPrice);
 
 private:
   int calculateOrderQuantity(double imbalance, int minQuantity = 1,

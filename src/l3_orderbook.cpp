@@ -25,6 +25,14 @@ double Orderbook::topAskVolume() const {
                                 : d_askLevelData.begin()->second.totalQuantity;
 }
 
+double Orderbook::topBidPrice() const {
+  return d_bidLevelData.empty() ? 0.0 : d_bidLevelData.begin()->first;
+}
+
+double Orderbook::topAskPrice() const {
+  return d_askLevelData.empty() ? 0.0 : d_askLevelData.begin()->first;
+}
+
 void Orderbook::applyOrderEvent(const AddOrder *addOrder) {
   OrderPointer order = d_orderPool.allocate(addOrder);
 
@@ -48,7 +56,8 @@ void Orderbook::applyOrderEvent(const AddOrder *addOrder) {
                   order->getRemainingQuantity());
 
   // Strategy engine
-  d_strategyEngine->applyOrderEvent(computeImbalance());
+  d_strategyEngine->applyOrderEvent(computeImbalance(), topBidPrice(),
+                                    topAskPrice());
 }
 
 void Orderbook::applyOrderEvent(const CancelOrder *cancelOrder) {
@@ -72,7 +81,8 @@ void Orderbook::applyOrderEvent(const CancelOrder *cancelOrder) {
   removeOrder(orderEntry);
 
   // Strategy engine
-  d_strategyEngine->applyOrderEvent(computeImbalance());
+  d_strategyEngine->applyOrderEvent(computeImbalance(), topBidPrice(),
+                                    topAskPrice());
 }
 
 void Orderbook::applyOrderEvent(const PartialCancelOrder *partialCancelOrder) {
@@ -104,7 +114,8 @@ void Orderbook::applyOrderEvent(const PartialCancelOrder *partialCancelOrder) {
   }
 
   // Strategy engine
-  d_strategyEngine->applyOrderEvent(computeImbalance());
+  d_strategyEngine->applyOrderEvent(computeImbalance(), topBidPrice(),
+                                    topAskPrice());
 }
 
 void Orderbook::applyOrderEvent(const FilledOrder *filledOrder) {
@@ -135,7 +146,8 @@ void Orderbook::applyOrderEvent(const FilledOrder *filledOrder) {
   }
 
   // Strategy engine
-  d_strategyEngine->applyOrderEvent(computeImbalance());
+  d_strategyEngine->applyOrderEvent(computeImbalance(), topBidPrice(),
+                                    topAskPrice());
 }
 
 void Orderbook::removeOrder(OrderEntry &orderEntry) {

@@ -6,15 +6,13 @@ namespace HFTSystem {
 
 OrderGenerator::OrderGenerator() {}
 
-void OrderGenerator::submitOrder(Side side, const std::string &ticker,
-                                 double quantity) {
-  // TODO
-  (void)side;
-  (void)ticker;
-  (void)quantity;
+void OrderGenerator::submitOrder(Side side, double price,
+                                 const std::string &ticker, double quantity) {
+  std::cout << "Submitted order " << (side == Side::BUY ? "Buy" : "SELL")
+            << ticker << " " << quantity << " " << price << std::endl;
 
-  // std::cout << "Submitted order " << (side == Side::BUY ? "Buy" : "SELL") <<
-  // ticker << " " << quantity << std::endl;
+  // increment this per order submitted
+  refNumber++;
 }
 
 } // namespace HFTSystem
