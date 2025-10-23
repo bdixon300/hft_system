@@ -98,6 +98,8 @@ void MarketDataClient::handleMarketData() {
   long long total = 0;
   long long packetNum = 0;
 
+  std::vector<long long> durationVector;
+
   while (true) {
     // To measure tick to trade latency
     auto start = std::chrono::high_resolution_clock::now();
@@ -149,11 +151,19 @@ void MarketDataClient::handleMarketData() {
     (void)total;
     (void)packetNum;
 
+    durationVector.push_back(duration);
+
+    if (packetNum % 1000 == 0)
+    {
+      // tail latency from 100000 packets
+      std::cout << "Tail latency " << durationVector[std::round(0.95 * durationVector.size())] << std::endl;
+    }
+
     // std::cout << "Elapsed time: " << duration << " microseconds" <<
     // std::endl; std::cout << "average: " << total / packetNum <<
     // "microseconds"
     //           << std::endl;
-    // std::cout << "packet num " << packetNum << std::endl;
+    std::cout << "packet num " << packetNum << std::endl;
   }
 }
 
