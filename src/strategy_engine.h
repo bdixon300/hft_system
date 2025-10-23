@@ -3,6 +3,9 @@
 
 #include <cstdint>
 #include <optional>
+#include <string>
+
+#include "order_generator.h"
 
 namespace HFTSystem {
 
@@ -12,16 +15,20 @@ namespace HFTSystem {
  */
 class StrategyEngine {
 public:
-  StrategyEngine();
-  ~StrategyEngine(){}
+  StrategyEngine(const std::string &ticker,
+                 double orderImbalanceThreshold = 0.2);
+
+  ~StrategyEngine() {}
 
   void applyOrderEvent(double orderbookImbalance);
 
 private:
-   double d_orderbookImbalance;
-   double d_imbalanceThreshold;
+  int calculateOrderQuantity(double imbalance, int minQuantity = 1,
+                             int maxQuantity = 1000);
 
-  // OrderGenerator d_orderGenerator;
+  const std::string d_ticker;
+  double d_imbalanceThreshold;
+  OrderGenerator d_orderGenerator;
 };
 
 } // namespace HFTSystem

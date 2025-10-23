@@ -28,13 +28,12 @@ void Parser::parseMarketDataMessage(const char *payload) {
     parseOrder<CancelOrder>(payload);
   } else if (PARTIAL_CANCEL_ORDER_TYPE == msgType) {
     parseOrder<PartialCancelOrder>(payload);
-  } else if (FILLED_ORDER_TYPE == msgType)
-  {
+  } else if (FILLED_ORDER_TYPE == msgType) {
     parseOrder<FilledOrder>(payload);
-  }
-  else {
-    // TODO - support trade events to remove orders / track orders that have been filled
-    // 
+  } else {
+    // TODO - support trade events to remove orders / track orders that have
+    // been filled
+    //
     // Unsupported order type for parser
   }
 }

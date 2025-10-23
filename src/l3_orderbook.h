@@ -59,7 +59,7 @@ private:
       d_orders; // makes it more efficient to cancel orders
 
   // Strategy engine - to pass order imbalance updates and generate OUTCH orders
-  StrategyEngine d_strategyEngine;
+  std::unique_ptr<StrategyEngine> d_strategyEngine;
 };
 
 } // namespace HFTSystem

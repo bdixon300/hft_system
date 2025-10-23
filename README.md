@@ -19,24 +19,30 @@ Done:
 - memory pool system for orderbook's orders
 - packet parser (parse cancel/modify orders)
 - orderbook (l3)
+- strategy engine
+
 
 IN PROGRESS
-- strategy engine
+- order manager (OUTCH -> OUTBOUND)
 
 
 TODOs:
 
+- use one shared order generator across orderbooks and use a spsc queue for the events
 - move logging to separate thread to prevent writes slowing down system
-- order manager (OUTCH -> OUTBOUND)
 
 Nice to do - 
 
 - create custom map std:: that uses contiguous memory. std::map is a RB tree and memory is not contiguous (use this in orderbook implementation)
-- SPSC / SPMC for lock free IPC (between packet parser and orderbook??) ?? - may not be needed for smaller security sizes
 
-Current Lateny level (on Apple M4 chip when run locally)
 
-- 3-4 microseconds from packet hitting nic to OUTCH message sent
+Current Mean Latency level (on Apple M4 chip when run locally)
+
+- 3-4 microseconds from packet getting from NIC to OUTCH message sent
+
+Current Median / Tail latency levels (on Apple M4 chep when running locally)
+
+- 6 - 10 microseconds
 
 Low latency Optimizations
 
@@ -44,12 +50,12 @@ C++ stuff
 
 - as few mem copies as possible
 - no virtual functions (avoid vtable lookup overhead)
-- minimal heap usage (including stl - used custom allocators for stl), and custom memory pools on startup
-- lock free programming on multithreading
+- minimal heap allocation/deallocation usage when live (including stl - used custom allocators for stl), and custom memory pools on startup
+- lock free programming on multithreading (SPSC queue)
 - constexpr + compile time optimizations
 - TMP optimizations
 
 Hardware/runtime configuration stuff
 
 - cpu thread pinning / overclocking
-- openonload / dpdk (solarflare NIC)
+- openonload / dpdk (solarflare NIC) for kernel bypass (cannot be done on my local machine)
