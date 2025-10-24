@@ -52,7 +52,7 @@ Low latency Optimization Principles
 - no virtual functions (avoid vtable lookup overhead)
 - minimal heap allocation/deallocation usage when live, ie: used custom memory pool on startup
 for orders in the orderbook.
-- lock free programming on multithreading side (SPSC queue)
+- lock free programming on multithreading side with an SPSC queue (for next phase)
 - constexpr + compile time optimizations
 - TMP optimizations
 
