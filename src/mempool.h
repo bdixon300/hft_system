@@ -53,13 +53,12 @@ public:
 
     ptrdiff_t index =
         reinterpret_cast<char *>(t) - reinterpret_cast<char *>(d_pool);
-    index /= sizeof(t);
+    index /= sizeof(T);
     if (index < 0 || static_cast<size_t>(index) >= d_capacity)
       throw std::runtime_error("Invalid pointer deallocation");
 
     d_freeIndices[--d_nextFree] = static_cast<size_t>(index);
   }
-
   // Reset pool (optional, for testing / clearing all)
   void reset() { d_nextFree = 0; }
 
