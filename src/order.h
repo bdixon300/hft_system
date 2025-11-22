@@ -63,13 +63,13 @@ struct FilledOrder {
 /** OUTCH BASED struct */
 #pragma pack(push, 1)
 struct OutchOrder {
-    char type;
-    OrderReferenceNumber orderReferenceNumber;
-    char side;
-    uint32_t quantity;
-    char stock[8];
-    uint32_t price;
-    // extra fields omitted in this simulation
+  char type;
+  OrderReferenceNumber orderReferenceNumber;
+  char side;
+  uint32_t quantity;
+  char stock[8];
+  uint32_t price;
+  // extra fields omitted in this simulation
 };
 #pragma pack(pop)
 
