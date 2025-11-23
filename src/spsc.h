@@ -82,7 +82,6 @@ private:
   const size_t d_capacity;
   const size_t d_mask;
 };
-}
 
 } // namespace HFTSystem
 
