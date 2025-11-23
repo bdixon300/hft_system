@@ -7,9 +7,6 @@
 
 namespace HFTSystem {
 
-// Lock free thread safe single producer single consumer queue
-// for low latency data transfer between threads
-// I implement the SPSC as a circular ring buffer
 static constexpr uint16_t CACHE_LINE = 64;
 
 template <typename T> class SPSCQ {
@@ -17,7 +14,7 @@ public:
   SPSCQ(size_t capacity)
       : d_capacity(capacity), d_mask(capacity - 1), d_head(0), d_tail(0),
         d_data(capacity) {
-    if (d_capacity <= 2 || (d_capacity & (d_capacity - 1) != 0))
+    if (d_capacity <= 2 || ((d_capacity & (d_capacity - 1)) != 0))
       throw std::runtime_error("Capacity violation");
   }
 
@@ -37,9 +34,9 @@ public:
     return true;
   }
 
-  bool push(const T &item) { return try_emplace(item); }
-
-  bool push(const T &&item) { return try_emplace(std::move(item)); }
+  template <typename U> bool push(U &&item) {
+    return try_emplace(std::forward<U>(item));
+  }
 
   bool pop(T &item) {
     size_t cur_head = d_head.load(std::memory_order_relaxed);
@@ -85,6 +82,7 @@ private:
   const size_t d_capacity;
   const size_t d_mask;
 };
+}
 
 } // namespace HFTSystem
 
