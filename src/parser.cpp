@@ -22,19 +22,22 @@ void Parser::parseMarketDataMessage(const char *payload) {
   // Order messages mostly cancels and skewness encourages branch prediction
   // For < 10 msg types if else faster than switch and much fast than
   // a map to functions to call
-  if (ADD_ORDER_TYPE == msgType) {
+  switch (msgType) {
+  case ADD_ORDER_TYPE:
     parseOrder<AddOrder>(payload);
-  } else if (CANCEL_ORDER_TYPE == msgType) {
+    break;
+  case CANCEL_ORDER_TYPE:
     parseOrder<CancelOrder>(payload);
-  } else if (PARTIAL_CANCEL_ORDER_TYPE == msgType) {
+    break;
+  case PARTIAL_CANCEL_ORDER_TYPE:
     parseOrder<PartialCancelOrder>(payload);
-  } else if (FILLED_ORDER_TYPE == msgType) {
+    break;
+  case FILLED_ORDER_TYPE:
     parseOrder<FilledOrder>(payload);
-  } else {
-    // TODO - support trade events to remove orders / track orders that have
-    // been filled
-    //
-    // Unsupported order type for parser
+    break;
+  default:
+    // Unknown order cannot be parsed
+    break;
   }
 }
 
