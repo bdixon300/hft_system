@@ -1,7 +1,6 @@
 #ifndef ORDER_H
 #define ORDER_H
 
-#include <list>
 #include <memory>
 #include <vector>
 
@@ -114,13 +113,6 @@ private:
 };
 
 using OrderPointer = Order *;
-using OrderPointers = std::list<OrderPointer>;
-using Orders = std::list<Order>;
-
-struct OrderEntry {
-  OrderPointer order{nullptr};
-  OrderPointers::iterator location_;
-};
 
 struct TradeInfo {
   OrderReferenceNumber id;
@@ -136,8 +128,6 @@ struct Trade {
 struct LevelData {
   Quantity totalQuantity;
 };
-
-using Trades = std::vector<Trade>;
 
 } // namespace HFTSystem
 

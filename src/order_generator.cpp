@@ -17,9 +17,9 @@ void OrderGenerator::submitOrder(Side side, double price,
   order.price = htonl(static_cast<uint32_t>(price * 10000));
   std::strncpy(order.symbol, ticker.c_str(), sizeof(order.symbol));
 
-  // Future deliverable - establish a TCP connection to a simulated exchange connection to submit
-  // Outch payload
-  std::cout << "Submitted order " << order.userReferenceNumber << std::endl;
+  // Future deliverable - establish a TCP connection to a simulated exchange
+  // connection to submit Outch payload
+  // std::cout << "Submitted order " << order.userReferenceNumber << std::endl;
 
   // increment this per order submitted
   refNumber++;

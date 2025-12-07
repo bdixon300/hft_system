@@ -32,7 +32,7 @@ public:
   double computeImbalance() const;
 
 private:
-  void removeOrder(OrderEntry &order);
+  void removeOrder(OrderPointer order);
 
   // computations for strategies
   double topBidVolume() const;
@@ -40,24 +40,17 @@ private:
   double topBidPrice() const;
   double topAskPrice() const;
 
-  // update level data
-  void updateLevelData(Side side, double price, double quantity);
-
   const std::string d_ticker;
 
   // memory pool for orders, to reduce heap allocations
   MemPool<Order> d_orderPool;
 
-  // actual price time priority order maps
-  std::map<Price, OrderPointers, std::greater<Price>> d_bids;
-  std::map<Price, OrderPointers, std::less<Price>> d_asks;
-
   // aggregate info about each level / order information
-  std::unordered_map<Price, LevelData> d_bidLevelData;
-  std::unordered_map<Price, LevelData> d_askLevelData;
+  std::map<Price, LevelData, std::greater<Price>> d_bidLevelData;
+  std::map<Price, LevelData, std::less<Price>> d_askLevelData;
 
   // order tracker
-  std::unordered_map<OrderReferenceNumber, OrderEntry>
+  std::unordered_map<OrderReferenceNumber, OrderPointer>
       d_orders; // makes it more efficient to cancel orders
 
   // Strategy engine - to pass order imbalance updates and generate OUTCH orders

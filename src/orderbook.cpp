@@ -1,4 +1,4 @@
-#include "l3_orderbook.h"
+#include "orderbook.h"
 #include <iostream>
 
 namespace HFTSystem {
@@ -36,24 +36,16 @@ double Orderbook::topAskPrice() const {
 void Orderbook::applyOrderEvent(const AddOrder *addOrder) {
   OrderPointer order = d_orderPool.allocate(addOrder);
 
-  //   std::cout << " Added Order: " << d_ticker << "  "
-  //             << order->getOrderReferenceNumber() << " " << order->getPrice()
-  //             << " " << order->getQuantity() << std::endl;
+  auto processOrderEvent = [&](auto &levelData) {
+    d_orders.insert({order->getOrderReferenceNumber(), order});
+    levelData[order->getPrice()].totalQuantity += order->getRemainingQuantity();
+  };
 
   if (order->getSide() == Side::BUY) {
-    auto &bids = d_bids[order->getPrice()];
-    bids.emplace_back(order);
-    d_orders.insert({order->getOrderReferenceNumber(),
-                     OrderEntry{order, std::prev(bids.end())}});
+    processOrderEvent(d_bidLevelData);
   } else {
-    auto &asks = d_asks[order->getPrice()];
-    asks.emplace_back(order);
-    d_orders.insert({order->getOrderReferenceNumber(),
-                     OrderEntry{order, std::prev(asks.end())}});
+    processOrderEvent(d_askLevelData);
   }
-
-  updateLevelData(order->getSide(), order->getPrice(),
-                  order->getRemainingQuantity());
 
   // Strategy engine
   d_strategyEngine->applyOrderEvent(computeImbalance(), topBidPrice(),
@@ -69,16 +61,24 @@ void Orderbook::applyOrderEvent(const CancelOrder *cancelOrder) {
     return;
   }
 
-  OrderEntry &orderEntry = d_orders[cancelOrder->orderReferenceNumber];
+  OrderPointer &order = d_orders[cancelOrder->orderReferenceNumber];
 
   //   std::cout << " Cancelling Order: " << d_ticker << "  "
   //             << orderEntry.order->getOrderReferenceNumber() << " "
   //             << orderEntry.order->getPrice() << " "
   //             << orderEntry.order->getQuantity() << std::endl;
 
-  updateLevelData(orderEntry.order->getSide(), orderEntry.order->getPrice(),
-                  -orderEntry.order->getRemainingQuantity());
-  removeOrder(orderEntry);
+  auto processCancel = [&](auto &levelData) {
+    levelData[order->getPrice()].totalQuantity -= order->getRemainingQuantity();
+  };
+
+  if (Side::BUY == order->getSide()) {
+    processCancel(d_bidLevelData);
+  } else {
+    processCancel(d_askLevelData);
+  }
+
+  removeOrder(order);
 
   // Strategy engine
   d_strategyEngine->applyOrderEvent(computeImbalance(), topBidPrice(),
@@ -95,7 +95,7 @@ void Orderbook::applyOrderEvent(const PartialCancelOrder *partialCancelOrder) {
     return;
   }
 
-  OrderEntry &orderEntry = d_orders[partialCancelOrder->orderReferenceNumber];
+  OrderPointer &order = d_orders[partialCancelOrder->orderReferenceNumber];
 
   //   std::cout << " Partially Cancelling Order: " << d_ticker << "  "
   //             << orderEntry.order->getOrderReferenceNumber() << " "
@@ -104,13 +104,22 @@ void Orderbook::applyOrderEvent(const PartialCancelOrder *partialCancelOrder) {
   //             << ", Quantity to cancel: " << partialCancelOrder->numShares
   //             << std::endl;
 
-  orderEntry.order->partialCancel(ntohl(partialCancelOrder->numShares));
+  order->partialCancel(ntohl(partialCancelOrder->numShares));
 
-  updateLevelData(orderEntry.order->getSide(), orderEntry.order->getPrice(),
-                  -orderEntry.order->getRemainingQuantity());
+  auto processPartialCancel = [&](auto &levelData) {
+    levelData[order->getPrice()].totalQuantity -=
+        ntohl(partialCancelOrder->numShares);
+  };
+
+  if (Side::BUY == order->getSide()) {
+    processPartialCancel(d_bidLevelData);
+  } else {
+    processPartialCancel(d_askLevelData);
+  }
+
   // If order is fully cancelled remove from orderbook
-  if (orderEntry.order->filledOrCancelled()) {
-    removeOrder(orderEntry);
+  if (order->filledOrCancelled()) {
+    removeOrder(order);
   }
 
   // Strategy engine
@@ -127,7 +136,7 @@ void Orderbook::applyOrderEvent(const FilledOrder *filledOrder) {
     return;
   }
 
-  OrderEntry &orderEntry = d_orders[filledOrder->orderReferenceNumber];
+  OrderPointer &order = d_orders[filledOrder->orderReferenceNumber];
 
   //   std::cout << "Order executed: " << d_ticker << "  "
   //         << orderEntry.order->getOrderReferenceNumber() << " "
@@ -136,13 +145,22 @@ void Orderbook::applyOrderEvent(const FilledOrder *filledOrder) {
   //         << ", Quantity executed: " << ntohl(filledOrder->executedShares)
   //         << std::endl;
 
-  orderEntry.order->fill(ntohl(filledOrder->executedShares));
-  updateLevelData(orderEntry.order->getSide(), orderEntry.order->getPrice(),
-                  -orderEntry.order->getRemainingQuantity());
-  if (orderEntry.order->filledOrCancelled()) {
+  order->fill(ntohl(filledOrder->executedShares));
+
+  auto processFill = [&](auto &levelData) {
+    levelData[order->getPrice()].totalQuantity -= order->getRemainingQuantity();
+  };
+
+  if (Side::BUY == order->getSide()) {
+    processFill(d_bidLevelData);
+  } else {
+    processFill(d_askLevelData);
+  }
+
+  if (order->filledOrCancelled()) {
     // std::cout << "Removing Order " <<
     // orderEntry.order->getOrderReferenceNumber() << std::endl;
-    removeOrder(orderEntry);
+    removeOrder(order);
   }
 
   // Strategy engine
@@ -150,32 +168,10 @@ void Orderbook::applyOrderEvent(const FilledOrder *filledOrder) {
                                     topAskPrice());
 }
 
-void Orderbook::removeOrder(OrderEntry &orderEntry) {
-  OrderPointer &order = orderEntry.order;
-
-  if (order->getSide() == Side::BUY) {
-    d_bids[order->getPrice()].erase(orderEntry.location_);
-    if (d_bids[order->getPrice()].empty())
-      d_bids.erase(order->getPrice());
-  } else {
-    d_asks[order->getPrice()].erase(orderEntry.location_);
-    if (d_asks[order->getPrice()].empty())
-      d_asks.erase(order->getPrice());
-  }
-
+void Orderbook::removeOrder(OrderPointer order) {
   d_orders.erase(order->getOrderReferenceNumber());
   // Remove order from memory pool
   d_orderPool.deallocate(order);
-}
-
-void Orderbook::updateLevelData(Side side, double price, double quantity) {
-  if (side == Side::BUY) {
-    // level data update
-    d_bidLevelData[price].totalQuantity += quantity;
-  } else {
-    // level data update
-    d_askLevelData[price].totalQuantity += quantity;
-  }
 }
 
 } // namespace HFTSystem
