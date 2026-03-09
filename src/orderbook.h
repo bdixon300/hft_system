@@ -17,9 +17,11 @@ namespace HFTSystem {
 constexpr int NEGATIVE_SIGN = -1;
 constexpr int POSITIVE_SIGN = 1;
 
+constexpr int DEFAULT_CAPACITY = 1024 * 64;
+
 class Orderbook {
 public:
-  Orderbook(const std::string &ticker, size_t capacity = 1024 * 64);
+  Orderbook(const std::string &ticker, size_t capacity = DEFAULT_CAPACITY);
   ~Orderbook() {}
 
   // upserts

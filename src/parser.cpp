@@ -17,17 +17,17 @@ Parser::Parser(
 Parser::~Parser() {}
 
 void Parser::parseMarketDataMessage(const char *payload) {
-  const char msgType = payload[0];
+  const char& msgType = payload[0];
 
   // Order messages mostly cancels and skewness encourages branch prediction
   // For < 10 msg types if else faster than switch and much fast than
   // a map to functions to call
   switch (msgType) {
+  case CANCEL_ORDER_TYPE:
+    [[likely]] parseOrder<CancelOrder>(payload);
+    break;
   case ADD_ORDER_TYPE:
     parseOrder<AddOrder>(payload);
-    break;
-  case CANCEL_ORDER_TYPE:
-    parseOrder<CancelOrder>(payload);
     break;
   case PARTIAL_CANCEL_ORDER_TYPE:
     parseOrder<PartialCancelOrder>(payload);

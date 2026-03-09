@@ -4,6 +4,13 @@ file(GLOB SOURCE *.cpp)
 add_library(market_data_feed_handler_lib SHARED ${SOURCE})
 target_link_libraries(market_data_feed_handler_lib 
     pcap
+    profiler
+    Boost::container
+)
+
+target_include_directories(market_data_feed_handler_lib PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${Boost_INCLUDE_DIRS}     # add this
 )
 
 set_target_properties(market_data_feed_handler_lib PROPERTIES

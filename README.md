@@ -32,7 +32,7 @@ TODOs (next items)
 
 Nice to do (Potential further optimizations) - 
 
-- create custom std::map that uses contiguous memory. std::map is a RB tree and memory is not contiguous (use this in orderbook implementation to reduce latency).
+- create custom flatmap that uses contiguous memory. std::map is a RB tree and memory is not contiguous (use this in orderbook implementation to reduce latency).
 
 - look for further optimization possibilities
 
@@ -44,7 +44,7 @@ Current Mean Latency level (on Apple M4 chip when run locally)
 
 Current Median / Tail latency levels (on Apple M4 chep when running locally)
 
-- 6 - 10 microseconds
+- 10 - 20 microseconds
 
 Low latency Optimization Principles
 
