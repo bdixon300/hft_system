@@ -38,13 +38,11 @@ Nice to do (Potential further optimizations) -
 
 - Implement more sophisticated HFT strategies 
 
-Current Mean Latency level (on Apple M4 chip when run locally)
+microseconds from packet getting from NIC to OUTCH message sent
 
-- 3-4 microseconds from packet getting from NIC to OUTCH message sent
+Current p50 / p99 latency levels (on Apple M4 chep when running locally)
 
-Current Median / Tail latency levels (on Apple M4 chep when running locally)
-
-- 10 - 20 microseconds
+- 10 / 16 microseconds
 
 Low latency Optimization Principles
 
@@ -59,4 +57,5 @@ for orders in the orderbook.
 Hardware/runtime configuration stuff
 
 - cpu thread pinning / overclocking
-- openonload / dpdk (solarflare NIC) for kernel bypass (cannot be done on my local machine)
+- openonload (solarflare NIC) for kernel bypass (cannot be done on my local machine)
+- Might be able to use DPDK in future
